@@ -2,6 +2,8 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QLabel>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -19,5 +21,11 @@ public:
 
 private:
     Ui::MainWindow *ui;
+    QString m_word = "PROGRAMACION";        // In capital letter the objective word
+    QVector<QLabel*> m_slots;               // visual kaestchen
+
+    void setupWordUI();                     // create the lines
+    void applyGuess(QChar letter);          // allocate the letter if it is ther
+    bool allRevealed() const;               // is the word finish?
 };
 #endif // MAINWINDOW_H
