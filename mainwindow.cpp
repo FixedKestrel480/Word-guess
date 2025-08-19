@@ -5,6 +5,8 @@
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QMessageBox>
+#include <QRandomGenerator>
+#include <QShortcut>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -22,6 +24,15 @@ MainWindow::MainWindow(QWidget *parent)
         ui->pushButton_P, ui->pushButton_Q, ui->pushButton_R, ui->pushButton_S,
         ui->pushButton_T, ui->pushButton_U, ui->pushButton_V, ui->pushButton_W,
         ui->pushButton_X, ui->pushButton_Y, ui->pushButton_Z
+    };
+
+    m_wordList = {
+        "PROGRAMACION", "ALGORITMO", "VARIABLE", "COMPILADOR", "OBJETO",
+        "CLASE", "PUNTERO", "HERENCIA", "FUNCION", "VENTANA",
+        "TECLADO", "PANTALLA", "MEMORIA", "SISTEMA", "CODIGO"
+        , "PROYECTO","NOMBRE","APELLIDO","VIRUS","AMIGO",
+        "COMPUTADORA","CONSOLA","ARREPENTIDO","NOVIO","FAMILIA","PADRE","LENGUAJE",
+        "ESCUELA","SERIE","PELICULA"
     };
 
     //unique style for each one
@@ -48,6 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
             applyGuess(txt.at(0));
         });
     }
+     newGame(); //start a new game or initial game
     }
 
 
@@ -56,26 +68,51 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::newGame(){
+    // Elegir palabra al azar y normalizar a MAYÚSCULAS
+    int index = QRandomGenerator::global()->bounded(m_wordList.size()); //generate random  index of the word that is gonna be selected
+    m_word = m_wordList.at(index).toUpper(); //find the word
+
+    // Eliminate container and clean it
+    if (m_wordContainer) {
+        m_wordContainer->deleteLater();  //eliminate container if it exist
+        m_wordContainer = nullptr;//clean container
+    }
+    m_slots.clear();
+
+    // reactive all keys
+    const auto buttons = ui->centralwidget->findChildren<QPushButton*>();
+    for (QPushButton* btn : buttons) {
+        if (!btn) continue;
+        if (!btn->objectName().startsWith("pushButton_")) continue;
+        btn->setEnabled(true);
+    }
+
+    // built the lines for the new word
+    setupWordUI();
+}
+
 void MainWindow::setupWordUI()
 {
     // container
+    m_wordContainer = new QWidget(ui->centralwidget);
     auto *container = new QWidget(ui->centralwidget);
-    auto *h = new QHBoxLayout(container);
+    auto *h = new QHBoxLayout(m_wordContainer);
     h->setSpacing(12); //separte boxes by 12
     h->setContentsMargins(0, 0, 0, 0);
 
     //position of container
-    container->setGeometry(QRect(120, 200, 560, 60));
+    m_wordContainer->setGeometry(QRect(120, 200, 560, 60));
 
     m_slots.clear();
     m_slots.reserve(m_word.size()); //reserve the lenght of the word
 
-    for (QChar c : m_word) {
+    for (QChar i : m_word) {
         auto *lab = new QLabel(container); //creates box
         lab->setMinimumSize(32, 40); //min size
         lab->setAlignment(Qt::AlignCenter); //aligment
 
-        if (c.isSpace()) { //if word has spaces
+        if (i.isSpace()) { //if word has spaces
             lab->setText(" "); //does not draw lines
             lab->setStyleSheet("border: none;");
         } else { //if letter
