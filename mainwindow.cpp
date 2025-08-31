@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     ui->centralwidget->setStyleSheet("background-color: lightblue;");
 
     //list of buttons
@@ -25,6 +26,20 @@ MainWindow::MainWindow(QWidget *parent)
         ui->pushButton_T, ui->pushButton_U, ui->pushButton_V, ui->pushButton_W,
         ui->pushButton_X, ui->pushButton_Y, ui->pushButton_Z
     };
+    QString button_style =
+        "QPushButton {"
+        "   background-color: #2F4F4F;"
+        "   color: white;"
+        "   border-radius: 5px;"
+        "   padding: 6px;"
+        "}"
+        "QPushButton:hover {"
+        "   background-color: #4F6F6F;"  // heller color passing the mous
+        "}"
+        "QPushButton:disabled {"
+        "   background-color: gray;"     // gray when you already use it
+        "   color: lightgray;"
+                           "}";
 
     m_wordList = {
         "PROGRAMACION", "ALGORITMO", "VARIABLE", "COMPILADOR", "OBJETO",
@@ -32,11 +47,10 @@ MainWindow::MainWindow(QWidget *parent)
         "TECLADO", "PANTALLA", "MEMORIA", "SISTEMA", "CODIGO"
         , "PROYECTO","NOMBRE","APELLIDO","VIRUS","AMIGO",
         "COMPUTADORA","CONSOLA","ARREPENTIDO","NOVIO","FAMILIA","PADRE","LENGUAJE",
-        "ESCUELA","SERIE","PELICULA"
+        "ESCUELA","SERIE","PELICULA", "VARIEDAD"
     };
 
     //unique style for each one
-    QString button_style = "background-color: #2F4F4F; color: white;";
     //to change all the buttons
     for (QPushButton* btn : buttons) {
         if (btn) btn->setStyleSheet(button_style);
@@ -45,13 +59,12 @@ MainWindow::MainWindow(QWidget *parent)
     setupWordUI();
     // find which button was pressed
         const auto allButtons = ui->centralwidget->findChildren<QPushButton*>();
-    const QString keyStyle = "background-color: #2F4F4F; color: white;";
 
     for (QPushButton* btn : allButtons) { //look in all buttons
         if (!btn) continue;
         if (!btn->objectName().startsWith("pushButton_")) continue; //just the buttons with letters
 
-        btn->setStyleSheet(keyStyle);
+        //btn->setStyleSheet(keyStyle);
         connect(btn, &QPushButton::clicked, this, [this, btn]() { //everytime this button is clicked, write letter
             const QString txt = btn->text().trimmed().toUpper(); //convert to capital letters
             if (txt.isEmpty()) return; //if empty
@@ -121,7 +134,7 @@ void MainWindow::setupWordUI()
             lab->setStyleSheet(
                 "QLabel {"
                 "  border: none;"
-                "  border-bottom: 3px dashed #1f3b3b;"
+                "  border-bottom: 2px solid #1f3b3b;"
                 "  font: bold 20px 'Segoe UI';"
                 "  color: #103030;"
                 "}"
