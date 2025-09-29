@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/hangman">
+        <file>images/cabeza1.png</file>
+        <file>images/boca10.png</file>
+        <file>images/brazo5.png</file>
+        <file>images/brazo6.png</file>
+        <file>images/ojo7.png</file>
+        <file>images/ojo8.png</file>
+        <file>images/pierna3.png</file>
+        <file>images/pierna4.png</file>
+        <file>images/torso2.png</file>
+    </qresource>
+</RCC>

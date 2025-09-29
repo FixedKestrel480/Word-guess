@@ -13,6 +13,22 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    m_hangmanLabel = new QLabel(ui->centralwidget);
+    m_hangmanLabel->setGeometry(750, 20, 200, 200); // ajusta posición/tamaño a gusto
+    m_hangmanLabel->setScaledContents(true);
+    m_hangmanLabel->setStyleSheet("background:#ffffff; border:1px solid #c0c0c0; border-radius:6px;");
+
+    m_stagePaths = {
+        ":/hangman/cabeza1.png",
+        ":/hangman/torso2.png",
+        ":/hangman/pierna3.png",
+        ":/hangman/pierna4.png",
+        ":/hangman/brazo5.png",
+        ":/hangman/brazo6.png",
+        ":/hangman/ojo7.png",
+        ":/hangman/ojo8.png",
+        ":/hangman/boca10.png"
+    };
 
     ui->centralwidget->setStyleSheet("background-color: lightblue;");
 
@@ -176,3 +192,4 @@ bool MainWindow::allRevealed() const
     }
     return true;
 }
+
