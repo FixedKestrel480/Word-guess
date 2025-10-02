@@ -108,14 +108,18 @@ void MainWindow::newGame(){
         m_wordContainer = nullptr;//clean container
     }
     m_slots.clear();
+    setLettersEnabled(true);
+    m_wrongGuesses = 0;
+    updateHangmanImage();
 
+    /*
     // reactive all keys
     const auto buttons = ui->centralwidget->findChildren<QPushButton*>();
     for (QPushButton* btn : buttons) {
         if (!btn) continue;
         if (!btn->objectName().startsWith("pushButton_")) continue;
         btn->setEnabled(true);
-    }
+    }*/
 
     // built the lines for the new word
     setupWordUI();
@@ -193,3 +197,22 @@ bool MainWindow::allRevealed() const
     return true;
 }
 
+void MainWindow::setLettersEnabled(bool enabled){ //what was in new game making it a function
+    const auto buttons = ui->centralwidget->findChildren<QPushButton*>();
+    for (QPushButton* btn : buttons) {
+        if (!btn) continue;
+        if (!btn->objectName().startsWith("pushButton_")) continue;
+        btn->setEnabled(enabled);
+    }
+}
+
+void MainWindow::updateHangmanImage(){ //shows the evolve image until m_wrongguesses
+    if(m_wrongGuesses<0){
+        m_hangmanLabel->clear(); //nothing at the beginning
+        return;
+    }
+
+    int index = qMin(m_wrongGuesses,m_stagePaths.size()); //from 1 until 9
+    //we show the image in the actual stage:
+    m_hangmanLabel->setPixmap(QPixmap(m_stagePaths[index - 1]));
+}
