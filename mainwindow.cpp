@@ -98,7 +98,7 @@ MainWindow::~MainWindow()
 }
 
 void MainWindow::newGame(){
-    // Elegir palabra al azar y normalizar a MAYÚSCULAS
+    // chose random word and put it in capital letter
     int index = QRandomGenerator::global()->bounded(m_wordList.size()); //generate random  index of the word that is gonna be selected
     m_word = m_wordList.at(index).toUpper(); //find the word
 
@@ -178,12 +178,28 @@ void MainWindow::applyGuess(QChar letter)
         }
     }
 
+    if(hit){
+        if(allRevealed()){
+            QMessageBox::information(this, "You win",
+                                     "You have guessed the word: " + m_word);
+            newGame();
+        }
+        return; // if correct don't change the hangman
+    }
 
-
-    if (hit && allRevealed()) {
+    /*if (hit && allRevealed()) {
         QMessageBox::information(this, "You win",
                                  "You have guessed the word: " + m_word);
 
+    }*/
+//if wrong
+    m_wrongGuesses++;              // Aumentar el número de errores
+    updateHangmanImage();
+    const int maximum_mistakes = m_maxMistakes;
+    if(m_wrongGuesses>=maximum_mistakes){
+        setLettersEnabled(false);
+        QMessageBox::information(this, "You loose", "You loose, The word was: "+m_word);
+        newGame();
     }
 }
 
@@ -207,12 +223,16 @@ void MainWindow::setLettersEnabled(bool enabled){ //what was in new game making 
 }
 
 void MainWindow::updateHangmanImage(){ //shows the evolve image until m_wrongguesses
-    if(m_wrongGuesses<0){
-        m_hangmanLabel->clear(); //nothing at the beginning
+    if (!m_hangmanLabel) return;
+
+    //if not mistakes empty
+    if (m_stagePaths.isEmpty() || m_wrongGuesses <= 0) {
+        m_hangmanLabel->clear();
         return;
     }
 
-    int index = qMin(m_wrongGuesses,m_stagePaths.size()); //from 1 until 9
-    //we show the image in the actual stage:
-    m_hangmanLabel->setPixmap(QPixmap(m_stagePaths[index - 1]));
+    // clamp a [1, m_stagePaths.size()]
+    const int idx = qBound(1, m_wrongGuesses, m_stagePaths.size());
+    m_hangmanLabel->setPixmap(QPixmap(m_stagePaths[idx - 1]));
+
 }
